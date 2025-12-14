@@ -20,7 +20,7 @@ const Login = () => {
   
 
   return (
-    <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex items-center">
+    <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex items-center mt-10 md:my-16">
       <div className="flex flex-col gap-4 m-auto p-8 min-w-[340px] sm:min-w-96 border rounded-xl shadow-lg text-sm text-zinc-600">
         <h2 className="text-2xl font-semibold text-center">Login</h2>
         <p className="text-center">Login to book appointment</p>
