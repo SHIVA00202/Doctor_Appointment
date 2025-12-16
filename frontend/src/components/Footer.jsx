@@ -61,7 +61,7 @@ const Footer = () => {
       <div>
         <hr />
         <p className="py-5 text-sm text-center text-gray-500">
-          © 2024 <span className="font-medium text-gray-700">Prescripto</span>. 
+          ©{new Date().getFullYear()}{" "}<span className="font-medium text-gray-700">Prescripto</span>. 
           All Rights Reserved.
         </p>
       </div>
