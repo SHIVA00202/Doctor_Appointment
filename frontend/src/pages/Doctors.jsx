@@ -4,19 +4,37 @@ import { AppContext } from "../context/AppContext";
 
 const Doctors = () => {
   const { speciality } = useParams();
- 
+  const [filterDoc, setFilterDoc] = useState([]);
+  const [showFilter, setShowFilter] = useState(false);
 
   const navigate = useNavigate();
 
   const { doctors } = useContext(AppContext);
 
-  
+  const applyFilter = () => {
+    if (speciality) {
+      setFilterDoc(doctors.filter((doc) => doc.speciality === speciality));
+    } else {
+      setFilterDoc(doctors);
+    }
+  };
+
+  useEffect(() => {
+    applyFilter();
+  }, [doctors, speciality]);
 
   return (
     <div>
       <p className="text-gray-600">Browse through the doctors specialist.</p>
       <div className="flex flex-col sm:flex-row items-start gap-5 mt-5">
-        
+        <button
+          className={`py-1 px-3 border rounded text-sm transition-all sm:hidden ${
+            showFilter ? "bg-primary text-white" : ""
+          }`}
+          onClick={() => setShowFilter((prev) => !prev)}
+        >
+          Filters
+        </button>
         <div
           className={`flex-col gap-4 text-sm text-gray-600 ${
             showFilter ? "flex" : "hidden sm:flex"
