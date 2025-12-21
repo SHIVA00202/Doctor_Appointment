@@ -16,7 +16,7 @@ const MyProfile = () => {
   });
 
   const [isEdit, setIsEdit] = useState(false);
-  const [image, setImage] = useState(null);
+  
 
   return (
     userData && (
