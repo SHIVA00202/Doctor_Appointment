@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
+  const { backendUrl, token, setToken } = useContext(AppContext);
   const navigate = useNavigate();
- 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,13 +14,35 @@ const Login = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/api/user/login",
+        { email, password }
+      );
+
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+        toast.success("Login successful");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
-  
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
 
   return (
-    <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex items-center mt-10 md:my-16">
+    <form
+      onSubmit={onSubmitHandler}
+      className="min-h-[80vh] flex items-center mt-10 md:my-16"
+    >
       <div className="flex flex-col gap-4 m-auto p-8 min-w-[340px] sm:min-w-96 border rounded-xl shadow-lg text-sm text-zinc-600">
         <h2 className="text-2xl font-semibold text-center">Login</h2>
         <p className="text-center">Login to book appointment</p>
@@ -61,7 +83,6 @@ const Login = () => {
           </Link>
         </p>
       </div>
-      
     </form>
   );
 };
