@@ -82,7 +82,7 @@ const Appointment = () => {
   }, [docInfo]);
 
   useEffect(() => {
-    console.log(docSlots[0][0].datetime.getDay());
+    console.log(docSlots);
   }, [docSlots]);
 
   return (
