@@ -2,9 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 
 const MyAppointments = () => {
   const { backendUrl, token, getDoctorsData } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const [appointments, setAppointments] = useState([]);
   const months = [
@@ -65,6 +68,50 @@ const MyAppointments = () => {
       toast.error(error.message);
     }
   };
+  
+    const initPay = (order) => {
+        const options = {
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+            amount: order.amount,
+            currency: order.currency,
+            name: 'Appointment Payment',
+            description: "Appointment Payment",
+            order_id: order.id,
+            receipt: order.receipt,
+            handler: async (response) => {
+
+                console.log(response)
+
+                try {
+                    const { data } = await axios.post(backendUrl + "/api/user/verify-razorpay", response, { headers: { token } });
+                    if (data.success) {
+                        
+                        getUserAppointments()
+                        navigate('/my-appointments')
+                    }
+                } catch (error) {
+                    console.log(error)
+                    toast.error(error.message)
+                }
+            }
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+    };
+  // Function to make payment using razorpay
+    const appointmentRazorpay = async (appointmentId) => {
+        try {
+            const { data } = await axios.post(backendUrl + '/api/user/payment-razorpay', { appointmentId }, { headers: { token } })
+            if (data.success) {
+                initPay(data.order)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
 
   useEffect(() => {
     if (token) {
@@ -107,12 +154,13 @@ const MyAppointments = () => {
             </div>
             <div></div>
             <div className="flex flex-col gap-2 justify-end">
-              {!item.cancelled && !item.isCompleted && (
-                <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
+               {!item.cancelled && item.payment &&  <button className='sm:min-w-48 py-2 border rounded text-[#696969]  bg-[#EAEFFF]'>Paid</button>}
+              {!item.cancelled && !item.payment && (
+                <button onClick={() => appointmentRazorpay(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300">
                   Pay Online
                 </button>
               )}
-              {!item.cancelled && !item.isCompleted && (
+              {!item.cancelled &&  (
                 <button
                   onClick={() => cancelAppointment(item._id)}
                   className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300"
@@ -120,16 +168,14 @@ const MyAppointments = () => {
                   Cancel appointment
                 </button>
               )}
-              {item.cancelled && !item.isCompleted && (
+              {item.cancelled && (
                 <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500">
                   Appointment cancelled
                 </button>
               )}
-              {item.isCompleted && (
-                <button className="sm:min-w-48 py-2 border border-green-500 rounded text-green-500">
-                  Completed
-                </button>
-              )}
+            
+
+              
             </div>
           </div>
         ))}
