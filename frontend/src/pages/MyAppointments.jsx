@@ -127,12 +127,15 @@ const MyAppointments = () => {
       <div>
         {appointments.map((item, index) => (
           <div
-            className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b"
+            className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b "
             key={index}
           >
             <div>
-              <img
-                className="w-32 bg-indigo-50"
+              <img  onClick={() => {
+              navigate(`/appointment/${item.docData._id}`);
+              scrollTo(0, 0);
+            }}
+                className="w-32 bg-indigo-50 cursor-pointer"
                 src={item.docData.image}
                 alt=""
               />

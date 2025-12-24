@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
     const isMatch = await bycrypt.compare(password, user.password);
 
     if (isMatch) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
       res.json({ success: true, token });
     } else {
       res.json({ success: false, message: "Invalid credentials" });
@@ -83,6 +83,7 @@ const loginUser = async (req, res) => {
 const getProfile = async (req, res) => {
   try {
     const { userId } = req.body;
+    console.log(userId);
     const useData = await userModel.findById(userId).select("-password");
 
     res.json({ success: true, user: useData });
@@ -245,7 +246,7 @@ const paymentRazorpay = async (req, res) => {
 
         // creating options for razorpay payment
         const options = {
-            amount: appointmentData.amount * 10,
+            amount: appointmentData.amount * 100,
             currency: process.env.CURRENCY,
             receipt: appointmentId,
         }

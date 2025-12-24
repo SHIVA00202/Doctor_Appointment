@@ -21,9 +21,9 @@ const SignUp = () => {
         { name, email, password }
       );
 
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        setToken(data.token);
+      if (data.success) {            
+        localStorage.setItem("token", data.token);   
+        setToken(data.token);        
         toast.success("Account created successfully");
       } else {
         toast.error(data.message);
@@ -84,7 +84,7 @@ const SignUp = () => {
         </div>
 
         <button
-          type="submit"
+          type="submit" 
           className="bg-primary text-white w-full py-2 rounded-md text-base hover:opacity-90 transition"
         >
           Create Account

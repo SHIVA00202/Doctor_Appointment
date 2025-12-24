@@ -34,7 +34,9 @@ const AppContextProvider = (props) => {
         headers: { token },
       });
       if (data.success) {
-        setUserData(data.user);         
+        setUserData(data.user);
+        console.log(data);
+                 
       } else {        
         toast.error(data.message);
       }
@@ -55,19 +57,20 @@ const AppContextProvider = (props) => {
     setUserData,
     loadUserProfileData,
   };
-
-  useEffect(() => {
-    getDoctorsData();
-  }, []);
-
-  useEffect(() => {
+   useEffect(() => {
     if (token) {
-      loadUserProfileData();
+      loadUserProfileData();      
     } else {
       setUserData(false);
     }
   }, [token]);
 
+
+  useEffect(() => {
+    getDoctorsData();
+  }, []);
+
+ 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
   );
