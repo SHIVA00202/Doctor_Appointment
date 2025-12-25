@@ -1,8 +1,7 @@
 import doctorModel from "../models/doctorModel.js";
-import appointmentModel from "../models/appointmentModel.js";
+import bycrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-
+import appointmentModel from "../models/appointmentModel.js";
 
 const changeAvailability = async (req, res) => {
   try {
@@ -16,7 +15,8 @@ const changeAvailability = async (req, res) => {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
-} ;                                         
+};
+
 const doctorList = async (req, res) => {
   try {
     const doctors = await doctorModel.find({}).select(["-password", "-email"]);
@@ -27,6 +27,7 @@ const doctorList = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
 // API for doctor Login
 const loginDoctor = async (req, res) => {
   try {
@@ -37,7 +38,7 @@ const loginDoctor = async (req, res) => {
       return res.json({ success: false, message: "Invalid credentials" });
     }
 
-    const isMatch = await bcrypt.compare(password, doctor.password);
+    const isMatch = await bycrypt.compare(password, doctor.password);
 
     if (isMatch) {
       const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET);
@@ -140,7 +141,41 @@ const doctorDashboard = async (req, res) => {
   }
 };
 
+// API to get doctor profile for Doctor panel
+const doctorProfile = async (req, res) => {
+  try {
+    const { docId } = req.body;
+    const profileData = await doctorModel.findById(docId).select("-password");
 
+    res.json({ success: true, profileData });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
-export { changeAvailability, doctorList, loginDoctor, appointmentsDoctor, appointmentComplete, appointmentCancel , doctorDashboard };
+// API to update doctor profile data from Doctor panel
+const updateDoctorProfile = async (req, res) => {
+  try {
+    const { docId, fees, address, available } = req.body;
 
+    await doctorModel.findByIdAndUpdate(docId, { fees, address, available });
+
+    res.json({ success: true, message: "Profile Updated" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export {
+  changeAvailability,
+  doctorList,
+  loginDoctor,
+  appointmentsDoctor,
+  appointmentCancel,
+  appointmentComplete,
+  doctorDashboard,
+  doctorProfile,
+  updateDoctorProfile,
+};
