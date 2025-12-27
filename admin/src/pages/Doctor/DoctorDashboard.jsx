@@ -7,11 +7,11 @@ const DoctorDashboard = () => {
   const {
     dToken,
     dashData,
-    setDashData,
     getDashData,
     completeAppointment,
     cancelAppointment,
   } = useContext(DoctorContext);
+
   const { currency, slotDateFormat } = useContext(AppContext);
 
   useEffect(() => {
@@ -22,81 +22,91 @@ const DoctorDashboard = () => {
 
   return (
     dashData && (
-      <div className="m-5">
-        <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer hover:scale-105 transition-all">
+      <div className="m-5 space-y-10">
+        {/* ===== STATS (FLEX) ===== */}
+        <div className="flex flex-wrap gap-5">
+          {/* Earnings */}
+          <div className="flex items-center gap-4 bg-white p-5 min-w-[250px] flex-1 rounded-xl border shadow-sm hover:shadow-md hover:-translate-y-1 transition">
             <img className="w-14" src={assets.earning_icon} alt="" />
             <div>
-              <p className="text-xl font-semibold text-gray-600">
+              <p className="text-2xl font-semibold text-gray-800">
                 {currency} {dashData.earnings}
               </p>
-              <p className="text-gray-400">Earnings</p>
+              <p className="text-sm text-gray-500">Total Earnings</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer hover:scale-105 transition-all">
+          {/* Appointments */}
+          <div className="flex items-center gap-4 bg-white p-5 min-w-[250px] flex-1 rounded-xl border shadow-sm hover:shadow-md hover:-translate-y-1 transition">
             <img className="w-14" src={assets.appointments_icon} alt="" />
             <div>
-              <p className="text-xl font-semibold text-gray-600">
+              <p className="text-2xl font-semibold text-gray-800">
                 {dashData.appointments}
               </p>
-              <p className="text-gray-400">Appointments</p>
+              <p className="text-sm text-gray-500">Appointments</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-white p-4 min-w-52 rounded border-2 border-gray-100 cursor-pointer hover:scale-105 transition-all">
+          {/* Patients */}
+          <div className="flex items-center gap-4 bg-white p-5 min-w-[250px] flex-1 rounded-xl border shadow-sm hover:shadow-md hover:-translate-y-1 transition">
             <img className="w-14" src={assets.patients_icon} alt="" />
             <div>
-              <p className="text-xl font-semibold text-gray-600">
+              <p className="text-2xl font-semibold text-gray-800">
                 {dashData.patients}
               </p>
-              <p className="text-gray-400">Patients</p>
+              <p className="text-sm text-gray-500">Patients</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white">
-          <div className="flex items-center gap-2.5 px-4 py-4 mt-10 rounded-t border">
-            <img src={assets.list_icon} alt="" />
-            <p className="font-semibold">Latest Bookings</p>
+        {/* ===== LATEST BOOKINGS ===== */}
+        <div className="bg-white rounded-xl border shadow-sm">
+          <div className="flex items-center gap-3 px-6 py-4 border-b bg-gray-50 rounded-t-xl">
+            <img className="w-5" src={assets.list_icon} alt="" />
+            <p className="font-semibold text-gray-800">Latest Bookings</p>
           </div>
 
-          <div className="pt-4 border border-t-0">
+          <div className="flex flex-col divide-y">
             {dashData.latestAppointments.map((item, index) => (
               <div
-                className="flex items-center px-6 py-3 hover:bg-gray-100"
                 key={index}
+                className="flex items-center px-6 py-4 hover:bg-gray-50 transition"
               >
                 <img
-                  className="rounded-full w-10"
+                  className="w-11 h-11 rounded-full object-cover border"
                   src={item.userData.image}
                   alt=""
                 />
-                <div className="flex-1 text-sm">
-                  <p className="text-gray-800 font-medium">
+
+                <div className="flex-1 ml-4">
+                  <p className="font-medium text-gray-800">
                     {item.userData.name}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-xs text-gray-500">
                     {slotDateFormat(item.slotDate)}
                   </p>
                 </div>
+
+                {/* Status / Actions */}
                 {item.cancelled ? (
-                  <p className="text-red-400 text-xs font-medium">Cancelled</p>
+                  <span className="text-xs font-semibold text-red-500 bg-red-50 px-3 py-1 rounded-full">
+                    Cancelled
+                  </span>
                 ) : item.isCompleted ? (
-                  <p className="text-green-500 text-xs font-medium">
+                  <span className="text-xs font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full">
                     Completed
-                  </p>
+                  </span>
                 ) : (
-                  <div className="flex">
+                  <div className="flex items-center gap-2">
                     <img
                       onClick={() => cancelAppointment(item._id)}
-                      className="w-10 cursor-pointer"
+                      className="w-9 p-1 rounded-full hover:bg-red-100 cursor-pointer transition"
                       src={assets.cancel_icon}
                       alt=""
                     />
                     <img
                       onClick={() => completeAppointment(item._id)}
-                      className="w-10 cursor-pointer"
+                      className="w-9 p-1 rounded-full hover:bg-green-100 cursor-pointer transition"
                       src={assets.tick_icon}
                       alt=""
                     />

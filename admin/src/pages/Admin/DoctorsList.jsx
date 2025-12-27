@@ -34,6 +34,7 @@ const DoctorsList = () => {
                   onChange={() => changeAvailability(item._id)}
                   type="checkbox"
                   checked={item.available}
+                  className="accent-indigo-600"
                 />
                 <p>Available</p>
               </div>
