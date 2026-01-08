@@ -17,7 +17,7 @@ userRouter.get("/appointments", authUser, listAppointment);
 userRouter.post("/cancel-appointment", authUser, cancelAppointment);
 userRouter.post("/payment-razorpay", authUser, paymentRazorpay);
 userRouter.post("/verify-razorpay", authUser, verifyRazorpay);
-
+userRouter.get("/hello", (req, res) => res.send("hello"));
 
 
 
